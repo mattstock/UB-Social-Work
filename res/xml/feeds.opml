@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opml version="1.0">
+    <head>
+        <title>Your Subscriptions</title>
+    </head>
+    <body>
+		<outline text="UB SSW Announcements" title="UB SSW Announcements" htmlUrl="http://www.socialwork.buffalo.edu/" xmlUrl="http://www.socialwork.buffalo.edu/feeds/spotlights_rss.asp" type="rss"/>
+		<outline text="UB SSW Events" title="UB SSW Events" htmlUrl="http://www.socialwork.buffalo.edu/" xmlUrl="http://www.socialwork.buffalo.edu/feeds/events_rss.asp" type="rss"/>
+		<outline text="Living Proof" title="Living Proof" htmlUrl="http://www.socialwork.buffalo.edu/" xmlUrl="http://www.socialwork.buffalo.edu/podcast/living_proof.xml" type="rss"/>
+		<outline text="NIDA" title="NIDA" htmlUrl="http://www.drugabuse.gov/" xmlUrl="http://www.drugabuse.gov/nidanews.xml" type="rss"/>
+		<outline text="SAMHSA New Products" title="SAMHSA New Products" htmlUrl="http://store.samhsa.gov/" xmlUrl="http://store.samhsa.gov/rss/newproducts" type="rss"/>
+		<outline text="SAMHSA Updates" title="SAMHSA Updates" htmlUrl="http://blog.samhsa.gov/" xmlUrl="http://blog.samhsa.gov/feed/" type="rss"/>
+    </body>
+</opml>

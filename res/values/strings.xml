@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UB Social Work</string>
+    <string name="app_title">University at Buffalo Social Work Reader</string>
+    <string name="app_description">The best Social Work feeds from around the web</string>
+    <string name="email">sw-info@buffalo.edu</string>
+    <string name="website">http://www.socialwork.buffalo.edu/</string>
+	<string name="contact">Matt Stock</string>
+    <color name="main_color">#000055</color>
+</resources>
