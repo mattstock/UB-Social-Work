@@ -51,7 +51,6 @@ public class ReaderActivity extends TabActivity {
         setTabs(TAB_CHANNEL_TAG, currentTabFeed.getTitle());
 
         getTabHost().setOnTabChangedListener(new OnTabChangeListener(){
-        	@Override
         	public void onTabChanged(String tabId) {
         	    Feed currentTabFeed = mDbFeedAdapter.getFeed(mDbFeedAdapter.getFirstFeed().getId());
  	        	refreshFeed(currentTabFeed,false);
