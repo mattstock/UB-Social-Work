@@ -2,9 +2,10 @@
 <resources>
     <string name="app_name">UB Social Work</string>
     <string name="app_title">University at Buffalo Social Work Reader</string>
-    <string name="app_description">The best Social Work feeds from around the web</string>
+    <string name="app_description">News from the University at Buffalo School of Social Work</string>
     <string name="email">sw-info@buffalo.edu</string>
     <string name="website">http://www.socialwork.buffalo.edu/</string>
 	<string name="contact">Matt Stock</string>
+	<string name="new_version">Added descriptions to the channel listings\nEnable/disable individual feeds\nAggregate feed channel</string>
     <color name="main_color">#000055</color>
 </resources>
