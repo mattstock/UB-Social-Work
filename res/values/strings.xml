@@ -6,6 +6,6 @@
     <string name="email">sw-info@buffalo.edu</string>
     <string name="website">http://www.socialwork.buffalo.edu/</string>
 	<string name="contact">Matt Stock</string>
-	<string name="new_version">Added descriptions to the channel listings\nEnable/disable individual feeds\nAggregate feed channel</string>
+	<string name="new_version">More feeds!</string>
     <color name="main_color">#000055</color>
 </resources>
