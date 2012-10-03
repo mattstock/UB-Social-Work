@@ -1,0 +1,117 @@
+package org.csgeeks.socialwork;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import android.content.Context;
+import android.content.res.XmlResourceParser;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+public class DatabaseHelper extends SQLiteOpenHelper {
+	private static final String TAG = "DatabaseHelper";
+	private static final String DATABASE_NAME = "dbfeed";
+	private static final int DATABASE_VERSION = 1;
+	public static final String SORT_ASC = " ASC";
+	public static final String SORT_DESC = " DESC";
+	public static final String[] ORDERS = { SORT_ASC, SORT_DESC };
+	public static final int OFF = 0;
+	public static final int ON = 1;
+	private Context mCtx;
+
+	DatabaseHelper(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		mCtx = context;
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		FeedTable.onCreate(db);
+		EnclosureTable.onCreate(db);
+		ItemTable.onCreate(db);
+
+		populateFeeds(db);
+		Log.d(TAG, "onCreate() complete");
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		FeedTable.onUpgrade(db, oldVersion, newVersion);
+		ItemTable.onUpgrade(db, oldVersion, newVersion);
+		EnclosureTable.onUpgrade(db, oldVersion, newVersion);
+	}
+
+	private List<Feed> getOPMLResourceFeeds() throws XmlPullParserException,
+			MalformedURLException, IOException {
+		List<Feed> feeds = new ArrayList<Feed>();
+		Feed feed;
+
+		XmlResourceParser parser = mCtx.getResources().getXml(R.xml.feeds);
+
+		int eventType = -1;
+		while (eventType != XmlResourceParser.END_DOCUMENT) {
+			if (eventType == XmlResourceParser.START_TAG) {
+				String tagName = parser.getName();
+				if (tagName.equals("outline")
+						&& parser.getAttributeCount() >= 4) {
+					feed = new Feed();
+					feed.setTitle(parser.getAttributeValue(null, "title"));
+					feed.setURL(new URL(parser
+							.getAttributeValue(null, "xmlUrl")));
+					feed.setHomePage(new URL(parser.getAttributeValue(null,
+							"htmlUrl")));
+					feed.setType(parser.getAttributeValue(null, "type"));
+					feed.setDescription(parser.getAttributeValue(null, "text"));
+					feed.setEnabled(ON);
+					feeds.add(feed);
+				}
+			}
+			eventType = parser.next();
+		}
+		parser.close();
+		return feeds;
+	}
+
+	// All of the initial population stuff needs to interact with the raw DB, not via content provider
+	private void populateFeeds(SQLiteDatabase db) {
+		// Read and populate OPML feeds
+		try {
+			for (Feed feed : getOPMLResourceFeeds()) {
+				if (hasFeed(db, feed) == -1)
+			        db.insert(FeedTable.TABLE_NAME, null, feed.toContentValues());     		
+				else
+			        db.update(FeedTable.TABLE_NAME, feed.toContentValues(), FeedTable._ID + "=?", new String[]{ Long.toString(feed.getId()) }); 
+			}
+		} catch (XmlPullParserException xppe) {
+			Log.e(TAG, "", xppe);
+		} catch (MalformedURLException mue) {
+			Log.e(TAG, "", mue);
+		} catch (IOException ioe) {
+			Log.e(TAG, "", ioe);
+		}
+	}
+
+	// check if feed URL already exists in the DB
+	// if exists, returns feed id
+	// if does not exist, returns -1
+	private long hasFeed(SQLiteDatabase db, Feed feed) {
+		long feedId = -1;
+		String[] projection = { FeedTable._ID };
+		Cursor cursor = db.query(FeedTable.TABLE_NAME, projection, FeedTable.COLUMN_URL + "=?",
+				new String[] { feed.getURL().toString() }, null, null, null);
+		if (cursor.moveToFirst())
+			feedId = cursor.getLong(cursor.getColumnIndex(FeedTable._ID));
+
+		if (cursor != null)
+			cursor.close();
+
+		return feedId;
+	}
+}
