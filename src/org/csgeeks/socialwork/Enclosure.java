@@ -22,6 +22,8 @@ package org.csgeeks.socialwork;
 
 import java.net.URL;
 
+import android.content.ContentValues;
+
 /**
  * A class for creating and managing item enclosures.
  * @author Mathieu Favez
@@ -66,6 +68,14 @@ public class Enclosure {
 	
 	public String toString() {
 		return "{ID=" + this.mId + " mime=" + this.mMime + " URL=" + this.mURL.toString() + "}";
+	}
+
+	public ContentValues toContentValues() {
+		ContentValues values = new ContentValues();
+		values.put(EnclosureTable._ID, mId);
+		values.put(EnclosureTable.COLUMN_MIME, mMime);
+		values.put(EnclosureTable.COLUMN_URL, mURL.toString());
+		return values;
 	}
 	
 }

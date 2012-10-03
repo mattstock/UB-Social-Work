@@ -41,12 +41,14 @@ public class Item {
 	private String mDescription;
 	private String mContent;
 	private URL mImage = null;
+	private ArrayList<Enclosure> mEnclosures;
 	private Date mPubdate;
 	private boolean mFavorite = false;
 	private boolean mRead = false;
 	
 	public Item() {
 		mPubdate = new Date();
+		mEnclosures = new ArrayList<Enclosure>();
 	}
 	
 	public Item(long id, URL link, String guid, String title, String description, String content, URL image, Date pubdate, boolean favorite, boolean read) {
@@ -154,14 +156,17 @@ public class Item {
 		this.mRead = false;
 	}
 	
-	/*
-	public void setRead(boolean read) {
-		if (!read)
-			this.mRead = false;
-		else
-			this.mRead = true;
+	public void addEnclosure(Enclosure e) {
+		this.mEnclosures.add(e);
 	}
-	*/
+	
+	public void setEnclosures(ArrayList<Enclosure> es){
+		this.mEnclosures = es;
+	}
+	
+	public List<Enclosure> getEnclosures() {
+		return this.mEnclosures;
+	}
 	
 	public void setRead(int state) {
 		if (state == DatabaseHelper.OFF)
@@ -176,7 +181,7 @@ public class Item {
 		
 	public ContentValues toContentValues() {
 		ContentValues values = new ContentValues();
-		values.put(ItemTable.COLUMN_FEED_ID, mId);
+		values.put(ItemTable._ID, mId);
 		values.put(ItemTable.COLUMN_LINK, mLink.toString());
 		values.put(ItemTable.COLUMN_GUID, mGuid);
 		values.put(ItemTable.COLUMN_TITLE, mTitle);

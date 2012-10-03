@@ -22,18 +22,25 @@ public class MyContentProvider extends ContentProvider {
 	private static final int FEED_ID = 20;
 	private static final int ITEMS = 30;
 	private static final int ITEM_ID = 40;
-	private static final int LINK_ID = 50;
+	private static final int FEEDLIST_ID = 50;
+	private static final int ENCLOSURES = 80;
+	private static final int ENCLOSURE_ID = 60;
+	private static final int ITEMLIST_ID = 70;
 
 	private static final String AUTHORITY = "org.csgeeks.socialwork.contentprovider";
 	private static final String FEED_BASE_PATH = "feeds";
 	private static final String ITEM_BASE_PATH = "items";
-	private static final String LINK_BASE_PATH = "itemsinfeed";
+	private static final String FEEDLIST_BASE_PATH = "itemsinfeed";
+	private static final String ENCLOSURE_BASE_PATH = "enclosure";
+	private static final String ITEMLIST_BASE_PATH = "enclosuresinitem";
 	public static final Uri FEED_CONTENT_URI = Uri.parse("content://" + AUTHORITY
 			+ "/" + FEED_BASE_PATH);
 	public static final Uri ITEM_CONTENT_URI = Uri.parse("content://" + AUTHORITY
 			+ "/" + ITEM_BASE_PATH);
-	public static final Uri LINK_CONTENT_URI = Uri.parse("content://" + AUTHORITY
-			+ "/" + LINK_BASE_PATH);
+	public static final Uri FEEDLIST_CONTENT_URI = Uri.parse("content://" + AUTHORITY
+			+ "/" + FEEDLIST_BASE_PATH);
+	public static final Uri ENCLOSURE_CONTENT_URI = Uri.parse("content://" + AUTHORITY
+			+ "/" + ENCLOSURE_BASE_PATH);
 	public static final String FEED_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
 			+ "/feeds";
 	public static final String FEED_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
@@ -42,10 +49,8 @@ public class MyContentProvider extends ContentProvider {
 			+ "/items";
 	public static final String ITEM_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
 			+ "/item";
-	public static final String LINK_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
-			+ "/links";
-	public static final String LINK_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
-			+ "/link";
+	public static final String FEEDLIST_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+			+ "/itemsinfeed";
 
 	private static final UriMatcher sURIMatcher = new UriMatcher(
 			UriMatcher.NO_MATCH);
@@ -55,7 +60,10 @@ public class MyContentProvider extends ContentProvider {
 		sURIMatcher.addURI(AUTHORITY, FEED_BASE_PATH + "/#", FEED_ID);
 		sURIMatcher.addURI(AUTHORITY, ITEM_BASE_PATH, ITEMS);
 		sURIMatcher.addURI(AUTHORITY, ITEM_BASE_PATH + "/#", ITEM_ID);
-		sURIMatcher.addURI(AUTHORITY, LINK_BASE_PATH + "/#", LINK_ID);
+		sURIMatcher.addURI(AUTHORITY, ENCLOSURE_BASE_PATH, ENCLOSURES);
+		sURIMatcher.addURI(AUTHORITY, ENCLOSURE_BASE_PATH + "/#", ENCLOSURE_ID);
+		sURIMatcher.addURI(AUTHORITY, FEEDLIST_BASE_PATH + "/#", FEEDLIST_ID);
+		sURIMatcher.addURI(AUTHORITY, ITEMLIST_BASE_PATH + "/#", ITEMLIST_ID);
 	}
 
 	@Override
@@ -90,10 +98,20 @@ public class MyContentProvider extends ContentProvider {
 			queryBuilder.setTables(ItemTable.TABLE_NAME);
 			queryBuilder.appendWhere(ItemTable._ID + "=" + uri.getLastPathSegment());
 			break;
-		case LINK_ID:
+		case ENCLOSURE_ID:
+			checkColumns(EnclosureTable.COLUMNS, projection);
+			queryBuilder.setTables(EnclosureTable.TABLE_NAME);
+			queryBuilder.appendWhere(EnclosureTable._ID + "=" + uri.getLastPathSegment());
+			break;
+		case FEEDLIST_ID:
 			checkColumns(ItemTable.COLUMNS, projection);
 			queryBuilder.setTables(ItemTable.TABLE_NAME);
 			queryBuilder.appendWhere(ItemTable.COLUMN_FEED_ID + "=" + uri.getLastPathSegment());			
+			break;
+		case ITEMLIST_ID:
+			checkColumns(EnclosureTable.COLUMNS, projection);
+			queryBuilder.setTables(EnclosureTable.TABLE_NAME);
+			queryBuilder.appendWhere(EnclosureTable.COLUMN_ITEM_ID + "=" + uri.getLastPathSegment());			
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -137,6 +155,10 @@ public class MyContentProvider extends ContentProvider {
 			id = sqlDB.insert(ItemTable.TABLE_NAME, null, values);
 			result = Uri.parse(ITEM_BASE_PATH + "/" + id);
 			break;
+		case ENCLOSURES:
+			id = sqlDB.insert(EnclosureTable.TABLE_NAME, null, values);
+			result = Uri.parse(ENCLOSURE_BASE_PATH + "/" + id);
+			break;			
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
@@ -176,6 +198,19 @@ public class MyContentProvider extends ContentProvider {
 						ItemTable._ID + "=" + id, null);
 			else
 				rowsDeleted = sqlDB.delete(ItemTable.TABLE_NAME, ItemTable._ID + "=" + id
+						+ " and " + selection, selectionArgs);
+			break;
+		case ENCLOSURES:
+			rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME, selection,
+					selectionArgs);
+			break;
+		case ENCLOSURE_ID:
+			id = uri.getLastPathSegment();
+			if (TextUtils.isEmpty(selection))
+				rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME,
+						EnclosureTable._ID + "=" + id, null);
+			else
+				rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME, EnclosureTable._ID + "=" + id
 						+ " and " + selection, selectionArgs);
 			break;
 		default:
@@ -225,6 +260,20 @@ public class MyContentProvider extends ContentProvider {
 				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values, ItemTable._ID
 						+ "=" + id + " and " + selection, selectionArgs);
 		
+			break;
+		case ENCLOSURES:
+			rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values, selection,
+					selectionArgs);
+			break;
+		case ENCLOSURE_ID:
+			id = uri.getLastPathSegment();
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values,
+						EnclosureTable._ID + "=" + id, null);
+			else
+				rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values,
+						EnclosureTable._ID + "=" + id
+						+ " and " + selection, selectionArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
