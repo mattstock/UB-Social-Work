@@ -1,0 +1,122 @@
+package org.csgeeks.socialwork;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.actionbarsherlock.app.SherlockListFragment;
+
+public class ItemListFragment extends SherlockListFragment implements
+		LoaderManager.LoaderCallbacks<Cursor> {
+	private static final String TAG = "ItemListFragment";
+	private SimpleCursorAdapter mCursorAdapter;
+	private SimpleDateFormat mFormat = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+	private long mFeedId;
+	private int mNum;
+	private String mTitle;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		Bundle b = getArguments();
+		if (b != null) {
+			mNum = getArguments().getInt("num");
+			mFeedId = getArguments().getLong("feedId");
+			mTitle = getArguments().getString("title");
+		} else {
+			mNum = 1;
+			mFeedId = 1;
+			mTitle = "None";
+		}
+		Log.d(TAG, "onCreate()" + mNum);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		Log.d(TAG, "onCreateView()" + mNum);
+		View v = inflater.inflate(R.layout.fragment_pager_list, container,
+				false);
+		TextView tv = (TextView) v.findViewById(R.id.channel_name);
+		tv.setText(mTitle);
+		return v;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle saveInstanceState) {
+		String[] from = new String[] { ItemTable.COLUMN_TITLE,
+				ItemTable.COLUMN_PUBDATE };
+		int[] to = new int[] { android.R.id.text1, android.R.id.text2 };
+
+		Log.d(TAG, "onActivityCreated()");
+		super.onActivityCreated(saveInstanceState);
+
+		mCursorAdapter = new SimpleCursorAdapter(getActivity(),
+				android.R.layout.simple_list_item_2, null, from, to, 0);
+		mCursorAdapter.setViewBinder(new ViewBinder() {
+
+			@Override
+			public boolean setViewValue(View v, Cursor c, int index) {
+				if (index == 2) {
+					String date = mFormat.format(new Date(Long.parseLong(c
+							.getString(index))));
+					TextView tv = (TextView) v;
+					tv.setText(date);
+					return true;
+				}
+				return false;
+			}
+
+		});
+		setListAdapter(mCursorAdapter);
+		getLoaderManager().initLoader(0, null, this);
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Log.d(TAG, "Item click: " + id);
+		// Mark as read
+		ItemTable db = new ItemTable(getActivity());
+		ContentValues values = new ContentValues();
+		values.put(ItemTable.COLUMN_READ, DatabaseHelper.ON);
+		db.updateItem(id, values);
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		String[] projection = new String[] { ItemTable._ID,
+				ItemTable.COLUMN_TITLE, ItemTable.COLUMN_PUBDATE };
+		CursorLoader cursorLoader = new CursorLoader(getActivity(),
+				Uri.parse(MyContentProvider.FEEDLIST_CONTENT_URI + "/"
+						+ mFeedId), projection, null, null, ItemTable.COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
+		return cursorLoader;
+	}
+
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+		mCursorAdapter.swapCursor(data);
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> arg0) {
+		mCursorAdapter.swapCursor(null);
+	}
+}

@@ -17,7 +17,7 @@ import android.util.Log;
 public class MyContentProvider extends ContentProvider {
 	private DatabaseHelper database;
 	private static final String TAG = "MyContentProvider";
-	
+
 	private static final int FEEDS = 10;
 	private static final int FEED_ID = 20;
 	private static final int ITEMS = 30;
@@ -33,14 +33,16 @@ public class MyContentProvider extends ContentProvider {
 	private static final String FEEDLIST_BASE_PATH = "itemsinfeed";
 	private static final String ENCLOSURE_BASE_PATH = "enclosure";
 	private static final String ITEMLIST_BASE_PATH = "enclosuresinitem";
-	public static final Uri FEED_CONTENT_URI = Uri.parse("content://" + AUTHORITY
-			+ "/" + FEED_BASE_PATH);
-	public static final Uri ITEM_CONTENT_URI = Uri.parse("content://" + AUTHORITY
-			+ "/" + ITEM_BASE_PATH);
-	public static final Uri FEEDLIST_CONTENT_URI = Uri.parse("content://" + AUTHORITY
-			+ "/" + FEEDLIST_BASE_PATH);
-	public static final Uri ENCLOSURE_CONTENT_URI = Uri.parse("content://" + AUTHORITY
-			+ "/" + ENCLOSURE_BASE_PATH);
+	public static final Uri FEED_CONTENT_URI = Uri.parse("content://"
+			+ AUTHORITY + "/" + FEED_BASE_PATH);
+	public static final Uri ITEM_CONTENT_URI = Uri.parse("content://"
+			+ AUTHORITY + "/" + ITEM_BASE_PATH);
+	public static final Uri FEEDLIST_CONTENT_URI = Uri.parse("content://"
+			+ AUTHORITY + "/" + FEEDLIST_BASE_PATH);
+	public static final Uri ENCLOSURE_CONTENT_URI = Uri.parse("content://"
+			+ AUTHORITY + "/" + ENCLOSURE_BASE_PATH);
+	public static final Uri ITEMLIST_CONTENT_URI = Uri.parse("content://"
+			+ AUTHORITY + "/" + ITEMLIST_BASE_PATH);
 	public static final String FEED_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
 			+ "/feeds";
 	public static final String FEED_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
@@ -88,7 +90,8 @@ public class MyContentProvider extends ContentProvider {
 		case FEED_ID:
 			checkColumns(FeedTable.COLUMNS, projection);
 			queryBuilder.setTables(FeedTable.TABLE_NAME);
-			queryBuilder.appendWhere(FeedTable._ID + "=" + uri.getLastPathSegment());
+			queryBuilder.appendWhere(FeedTable._ID + "="
+					+ uri.getLastPathSegment());
 			break;
 		case ITEMS:
 			queryBuilder.setTables(ItemTable.TABLE_NAME);
@@ -96,22 +99,26 @@ public class MyContentProvider extends ContentProvider {
 		case ITEM_ID:
 			checkColumns(ItemTable.COLUMNS, projection);
 			queryBuilder.setTables(ItemTable.TABLE_NAME);
-			queryBuilder.appendWhere(ItemTable._ID + "=" + uri.getLastPathSegment());
+			queryBuilder.appendWhere(ItemTable._ID + "="
+					+ uri.getLastPathSegment());
 			break;
 		case ENCLOSURE_ID:
 			checkColumns(EnclosureTable.COLUMNS, projection);
 			queryBuilder.setTables(EnclosureTable.TABLE_NAME);
-			queryBuilder.appendWhere(EnclosureTable._ID + "=" + uri.getLastPathSegment());
+			queryBuilder.appendWhere(EnclosureTable._ID + "="
+					+ uri.getLastPathSegment());
 			break;
 		case FEEDLIST_ID:
 			checkColumns(ItemTable.COLUMNS, projection);
 			queryBuilder.setTables(ItemTable.TABLE_NAME);
-			queryBuilder.appendWhere(ItemTable.COLUMN_FEED_ID + "=" + uri.getLastPathSegment());			
+			queryBuilder.appendWhere(ItemTable.COLUMN_FEED_ID + "="
+					+ uri.getLastPathSegment());
 			break;
 		case ITEMLIST_ID:
 			checkColumns(EnclosureTable.COLUMNS, projection);
 			queryBuilder.setTables(EnclosureTable.TABLE_NAME);
-			queryBuilder.appendWhere(EnclosureTable.COLUMN_ITEM_ID + "=" + uri.getLastPathSegment());			
+			queryBuilder.appendWhere(EnclosureTable.COLUMN_ITEM_ID + "="
+					+ uri.getLastPathSegment());
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -121,8 +128,15 @@ public class MyContentProvider extends ContentProvider {
 		Cursor cursor = queryBuilder.query(db, projection, selection,
 				selectionArgs, null, null, sortOrder);
 		// Make sure that potential listeners are getting notified
+		switch (uriType) {
+		case FEEDLIST_ID:
+			cursor.setNotificationUri(getContext().getContentResolver(), FEEDLIST_CONTENT_URI);
+			break;
+		case ITEMLIST_ID:
+			cursor.setNotificationUri(getContext().getContentResolver(), ITEMLIST_CONTENT_URI);
+			break;
+		}
 		cursor.setNotificationUri(getContext().getContentResolver(), uri);
-
 		return cursor;
 	}
 
@@ -150,18 +164,25 @@ public class MyContentProvider extends ContentProvider {
 		case FEEDS:
 			id = sqlDB.insert(FeedTable.TABLE_NAME, null, values);
 			result = Uri.parse(FEED_CONTENT_URI + "/" + id);
-			getContext().getContentResolver().notifyChange(FEED_CONTENT_URI, null);
+			getContext().getContentResolver().notifyChange(FEED_CONTENT_URI,
+					null);
 			break;
 		case ITEMS:
 			id = sqlDB.insert(ItemTable.TABLE_NAME, null, values);
 			result = Uri.parse(ITEM_CONTENT_URI + "/" + id);
-			getContext().getContentResolver().notifyChange(ITEM_CONTENT_URI, null);
+			getContext().getContentResolver().notifyChange(ITEM_CONTENT_URI,
+					null);
+			getContext().getContentResolver().notifyChange(FEEDLIST_CONTENT_URI,
+					null);
 			break;
 		case ENCLOSURES:
 			id = sqlDB.insert(EnclosureTable.TABLE_NAME, null, values);
 			result = Uri.parse(ENCLOSURE_CONTENT_URI + "/" + id);
-			getContext().getContentResolver().notifyChange(ENCLOSURE_CONTENT_URI, null);
-			break;			
+			getContext().getContentResolver().notifyChange(
+					ENCLOSURE_CONTENT_URI, null);
+			getContext().getContentResolver().notifyChange(ITEMLIST_CONTENT_URI,
+					null);
+			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
@@ -174,7 +195,7 @@ public class MyContentProvider extends ContentProvider {
 		SQLiteDatabase sqlDB = database.getWritableDatabase();
 		int rowsDeleted = 0;
 		String id;
-		
+
 		switch (uriType) {
 		case FEEDS:
 			rowsDeleted = sqlDB.delete(FeedTable.TABLE_NAME, selection,
@@ -183,11 +204,11 @@ public class MyContentProvider extends ContentProvider {
 		case FEED_ID:
 			id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection))
-				rowsDeleted = sqlDB.delete(FeedTable.TABLE_NAME,
-						FeedTable._ID + "=" + id, null);
+				rowsDeleted = sqlDB.delete(FeedTable.TABLE_NAME, FeedTable._ID
+						+ "=" + id, null);
 			else
-				rowsDeleted = sqlDB.delete(FeedTable.TABLE_NAME, FeedTable._ID + "=" + id
-						+ " and " + selection, selectionArgs);
+				rowsDeleted = sqlDB.delete(FeedTable.TABLE_NAME, FeedTable._ID
+						+ "=" + id + " and " + selection, selectionArgs);
 			break;
 		case ITEMS:
 			rowsDeleted = sqlDB.delete(ItemTable.TABLE_NAME, selection,
@@ -196,11 +217,11 @@ public class MyContentProvider extends ContentProvider {
 		case ITEM_ID:
 			id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection))
-				rowsDeleted = sqlDB.delete(ItemTable.TABLE_NAME,
-						ItemTable._ID + "=" + id, null);
+				rowsDeleted = sqlDB.delete(ItemTable.TABLE_NAME, ItemTable._ID
+						+ "=" + id, null);
 			else
-				rowsDeleted = sqlDB.delete(ItemTable.TABLE_NAME, ItemTable._ID + "=" + id
-						+ " and " + selection, selectionArgs);
+				rowsDeleted = sqlDB.delete(ItemTable.TABLE_NAME, ItemTable._ID
+						+ "=" + id + " and " + selection, selectionArgs);
 			break;
 		case ENCLOSURES:
 			rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME, selection,
@@ -212,8 +233,9 @@ public class MyContentProvider extends ContentProvider {
 				rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME,
 						EnclosureTable._ID + "=" + id, null);
 			else
-				rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME, EnclosureTable._ID + "=" + id
-						+ " and " + selection, selectionArgs);
+				rowsDeleted = sqlDB.delete(EnclosureTable.TABLE_NAME,
+						EnclosureTable._ID + "=" + id + " and " + selection,
+						selectionArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -243,11 +265,12 @@ public class MyContentProvider extends ContentProvider {
 		case FEED_ID:
 			id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection))
-				rowsUpdated = sqlDB.update(FeedTable.TABLE_NAME, values, FeedTable._ID
-						+ "=" + id, null);
+				rowsUpdated = sqlDB.update(FeedTable.TABLE_NAME, values,
+						FeedTable._ID + "=" + id, null);
 			else
-				rowsUpdated = sqlDB.update(FeedTable.TABLE_NAME, values, FeedTable._ID
-						+ "=" + id + " and " + selection, selectionArgs);
+				rowsUpdated = sqlDB.update(FeedTable.TABLE_NAME, values,
+						FeedTable._ID + "=" + id + " and " + selection,
+						selectionArgs);
 			break;
 		case ITEMS:
 			rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values, selection,
@@ -256,16 +279,17 @@ public class MyContentProvider extends ContentProvider {
 		case ITEM_ID:
 			id = uri.getLastPathSegment();
 			if (TextUtils.isEmpty(selection))
-				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values, ItemTable._ID
-						+ "=" + id, null);
+				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values,
+						ItemTable._ID + "=" + id, null);
 			else
-				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values, ItemTable._ID
-						+ "=" + id + " and " + selection, selectionArgs);
-		
+				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values,
+						ItemTable._ID + "=" + id + " and " + selection,
+						selectionArgs);
+
 			break;
 		case ENCLOSURES:
-			rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values, selection,
-					selectionArgs);
+			rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values,
+					selection, selectionArgs);
 			break;
 		case ENCLOSURE_ID:
 			id = uri.getLastPathSegment();
@@ -274,8 +298,8 @@ public class MyContentProvider extends ContentProvider {
 						EnclosureTable._ID + "=" + id, null);
 			else
 				rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values,
-						EnclosureTable._ID + "=" + id
-						+ " and " + selection, selectionArgs);
+						EnclosureTable._ID + "=" + id + " and " + selection,
+						selectionArgs);
 			break;
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
