@@ -55,31 +55,6 @@ public class ItemListFragment extends SherlockListFragment implements
 		Log.d(TAG, "onCreate()" + mNum);
 	}
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    	inflater.inflate(R.menu.feed_options, menu);
-    	MenuItem feedsMenu = (MenuItem) menu.findItem(R.id.feeds);
-    	SubMenu subMenu = feedsMenu.getSubMenu();
-    	FeedTable ft = new FeedTable(getActivity());
-    	
-    	feedsMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    	
-    	int order = 0;
-    	for (Feed feed: ft.getFeeds()) {
-    		subMenu.add(0, Menu.NONE, order++, feed.getTitle());
-    	}
-    	
-    	subMenu.setGroupCheckable(0, true, false);
-    }
-    
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO figure out menu id for submenu items, then call
-		// look at tinyg code for how to talk to activity
-		mPager.setCurrentItem(0);
-		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle());
-		return false;
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
