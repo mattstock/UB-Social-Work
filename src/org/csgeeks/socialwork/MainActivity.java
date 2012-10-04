@@ -52,7 +52,6 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		public FeedPagerAdapter(FragmentManager fm) {
 			super(fm);
-			// TODO this might not work.
 			mFeeds = (new FeedTable(mCtx)).getEnabledFeeds();
 		}
 

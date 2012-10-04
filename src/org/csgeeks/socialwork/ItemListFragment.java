@@ -22,12 +22,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.SubMenu;
 
 public class ItemListFragment extends SherlockListFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = "ItemListFragment";
 	private SimpleCursorAdapter mCursorAdapter;
-	private SimpleDateFormat mFormat = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+	private SimpleDateFormat mFormat = new SimpleDateFormat(
+			"EEEE, MMMM d, yyyy");
 	private long mFeedId;
 	private int mNum;
 	private String mTitle;
@@ -35,6 +40,7 @@ public class ItemListFragment extends SherlockListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
 		Bundle b = getArguments();
 		if (b != null) {
@@ -47,6 +53,31 @@ public class ItemListFragment extends SherlockListFragment implements
 			mTitle = "None";
 		}
 		Log.d(TAG, "onCreate()" + mNum);
+	}
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    	inflater.inflate(R.menu.feed_options, menu);
+    	MenuItem feedsMenu = (MenuItem) menu.findItem(R.id.feeds);
+    	SubMenu subMenu = feedsMenu.getSubMenu();
+    	FeedTable ft = new FeedTable(getActivity());
+    	
+    	feedsMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    	
+    	int order = 0;
+    	for (Feed feed: ft.getFeeds()) {
+    		subMenu.add(0, Menu.NONE, order++, feed.getTitle());
+    	}
+    	
+    	subMenu.setGroupCheckable(0, true, false);
+    }
+    
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO figure out menu id for submenu items, then call
+		// look at tinyg code for how to talk to activity
+		mPager.setCurrentItem(0);
+		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle());
+		return false;
 	}
 
 	@Override
@@ -106,7 +137,8 @@ public class ItemListFragment extends SherlockListFragment implements
 				ItemTable.COLUMN_TITLE, ItemTable.COLUMN_PUBDATE };
 		CursorLoader cursorLoader = new CursorLoader(getActivity(),
 				Uri.parse(MyContentProvider.FEEDLIST_CONTENT_URI + "/"
-						+ mFeedId), projection, null, null, ItemTable.COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
+						+ mFeedId), projection, null, null,
+				ItemTable.COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
 		return cursorLoader;
 	}
 
@@ -118,5 +150,42 @@ public class ItemListFragment extends SherlockListFragment implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		mCursorAdapter.swapCursor(null);
+	}
+
+	private class MyCursorAdapter extends SimpleCursorAdapter {
+		Context mContext;
+		Cursor mCursor;
+		int[] mTo;
+		String[] mFrom;
+
+		public MyCursorAdapter(Context context, int layout, Cursor c,
+				String[] from, int[] to, int flags) {
+			super(context, layout, c, from, to, flags);
+			mContext = context;
+			mCursor = c;
+			mFrom = from;
+			mTo = to;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View row;
+			if (convertView == null)
+				row = View.inflate(mContext,
+						android.R.layout.simple_list_item_2, null);
+			else
+				row = convertView;
+
+			if (mCursor != null) {
+				mCursor.moveToPosition(position);
+
+				for (int i = 0; i < mFrom.length; i++) {
+					TextView tv = (TextView) row.findViewById(mTo[i]);
+					tv.setText(mCursor.getString(mCursor.getColumnIndex(mFrom[i])));
+				}
+			}
+			return row;
+		}
+
 	}
 }

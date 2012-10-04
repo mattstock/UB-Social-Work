@@ -178,12 +178,21 @@ public class FeedTable implements BaseColumns {
 	}
 
 	public ArrayList<Feed> getEnabledFeeds() {
+		return getFeeds(FeedTable.COLUMN_ENABLE + "=?", new String[] { Long.toString(DatabaseHelper.ON) });
+	}
+	
+	public ArrayList<Feed> getFeeds() {
+		return getFeeds(null, null);
+	}
+	
+	public ArrayList<Feed> getFeeds(String selection, String[] selectionArgs) {
+		
 		String[] projection = { FeedTable._ID };
 		ArrayList<Feed> feeds = new ArrayList<Feed>();
 		Cursor cursor = mResolver.query(
 				MyContentProvider.FEED_CONTENT_URI, projection,
-				FeedTable.COLUMN_ENABLE + "=?",
-				new String[] { Long.toString(DatabaseHelper.ON) },
+				selection,
+				selectionArgs,
 				FeedTable._ID + DatabaseHelper.SORT_ASC);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
