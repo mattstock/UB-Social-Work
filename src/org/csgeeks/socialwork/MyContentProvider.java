@@ -149,20 +149,22 @@ public class MyContentProvider extends ContentProvider {
 		switch (uriType) {
 		case FEEDS:
 			id = sqlDB.insert(FeedTable.TABLE_NAME, null, values);
-			result = Uri.parse(FEED_BASE_PATH + "/" + id);
+			result = Uri.parse(FEED_CONTENT_URI + "/" + id);
+			getContext().getContentResolver().notifyChange(FEED_CONTENT_URI, null);
 			break;
 		case ITEMS:
 			id = sqlDB.insert(ItemTable.TABLE_NAME, null, values);
-			result = Uri.parse(ITEM_BASE_PATH + "/" + id);
+			result = Uri.parse(ITEM_CONTENT_URI + "/" + id);
+			getContext().getContentResolver().notifyChange(ITEM_CONTENT_URI, null);
 			break;
 		case ENCLOSURES:
 			id = sqlDB.insert(EnclosureTable.TABLE_NAME, null, values);
-			result = Uri.parse(ENCLOSURE_BASE_PATH + "/" + id);
+			result = Uri.parse(ENCLOSURE_CONTENT_URI + "/" + id);
+			getContext().getContentResolver().notifyChange(ENCLOSURE_CONTENT_URI, null);
 			break;			
 		default:
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
-		getContext().getContentResolver().notifyChange(uri, null);
 		return result;
 	}
 

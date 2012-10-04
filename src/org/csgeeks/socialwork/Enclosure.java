@@ -72,7 +72,7 @@ public class Enclosure {
 
 	public ContentValues toContentValues() {
 		ContentValues values = new ContentValues();
-		values.put(EnclosureTable._ID, mId);
+//		values.put(EnclosureTable._ID, mId);
 		values.put(EnclosureTable.COLUMN_MIME, mMime);
 		values.put(EnclosureTable.COLUMN_URL, mURL.toString());
 		return values;

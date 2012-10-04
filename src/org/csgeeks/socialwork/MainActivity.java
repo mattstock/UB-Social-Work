@@ -99,6 +99,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 		@Override
 		public void onAttach(Activity activity) {
+			super.onAttach(activity);
 			mCtx = activity;
 		}
 		
@@ -189,7 +190,7 @@ public class MainActivity extends SherlockFragmentActivity {
 					ItemTable.COLUMN_TITLE, ItemTable.COLUMN_PUBDATE };
 			CursorLoader cursorLoader = new CursorLoader(getActivity(),
 					Uri.parse(MyContentProvider.FEEDLIST_CONTENT_URI + "/"
-							+ mFeedId), projection, null, null, null);
+							+ mFeedId), projection, null, null, ItemTable.COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
 			return cursorLoader;
 		}
 
@@ -210,8 +211,11 @@ public class MainActivity extends SherlockFragmentActivity {
 		FeedTable ft = new FeedTable(mCtx);
 		
 		for (Feed feed: ft.getEnabledFeeds())
-			if ((now.getTime() - feed.getRefresh().getTime()) > 30 * 60 * 1000)
+			if (feed.getRefresh() == null)
 				oldFeeds.add(feed);
+			else
+				if ((now.getTime() - feed.getRefresh().getTime()) > 30 * 60 * 1000)
+					oldFeeds.add(feed);
 		
 		new UpdateFeeds().execute(oldFeeds);
 	}

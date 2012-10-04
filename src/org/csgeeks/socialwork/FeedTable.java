@@ -146,18 +146,20 @@ public class FeedTable implements BaseColumns {
 	}
 
 	public boolean updateFeed(Feed feed) {
+		Log.d(TAG, "updateFeed(f): " + feed.getId());
 		return updateFeed(feed.getId(), getUpdateContentValues(feed),
 				feed.getItems());
 	}
 
 	public boolean updateFeed(long feedId, ContentValues values,
 			List<Item> items) {
+		Log.d(TAG, "updateFeed(f,v,i): " + feedId + " # items: " + items.size());
 		ItemTable itemtable = new ItemTable(mResolver);
 		int changed = mResolver.update(
 				Uri.parse(MyContentProvider.FEED_CONTENT_URI + "/" + feedId),
 				values, null, null);
 
-		
+		Log.d(TAG, "changed = " + changed);
 		if (changed > 0 && items != null) {
 			Item firstDbItem = itemtable.getFirstItem(feedId);
 			for (Item item : items) {

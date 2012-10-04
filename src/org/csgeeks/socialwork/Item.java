@@ -30,8 +30,8 @@ import android.content.ContentValues;
 
 /**
  * A class for creating and managing instances of items.
- * @author Mathieu Favez
- * Created 15/04/2010
+ * 
+ * @author Mathieu Favez Created 15/04/2010
  */
 public class Item {
 	private long mId = -1;
@@ -45,13 +45,15 @@ public class Item {
 	private Date mPubdate;
 	private boolean mFavorite = false;
 	private boolean mRead = false;
-	
+
 	public Item() {
 		mPubdate = new Date();
 		mEnclosures = new ArrayList<Enclosure>();
 	}
-	
-	public Item(long id, URL link, String guid, String title, String description, String content, URL image, Date pubdate, boolean favorite, boolean read) {
+
+	public Item(long id, URL link, String guid, String title,
+			String description, String content, URL image, Date pubdate,
+			boolean favorite, boolean read) {
 		super();
 		this.mId = id;
 		this.mLink = link;
@@ -64,15 +66,15 @@ public class Item {
 		this.mFavorite = favorite;
 		this.mRead = read;
 	}
-	
+
 	public void setId(long id) {
 		this.mId = id;
 	}
-	
+
 	public long getId() {
 		return mId;
 	}
-	
+
 	public void setLink(URL link) {
 		this.mLink = link;
 	}
@@ -80,23 +82,23 @@ public class Item {
 	public URL getLink() {
 		return this.mLink;
 	}
-	
+
 	public void setGuid(String guid) {
 		this.mGuid = guid;
 	}
-	
+
 	public String getGuid() {
 		return mGuid;
 	}
-	
+
 	public void setTitle(String title) {
 		this.mTitle = title;
 	}
-	
+
 	public String getTitle() {
 		return this.mTitle;
 	}
-	
+
 	public void setDescription(String description) {
 		this.mDescription = description;
 	}
@@ -104,7 +106,7 @@ public class Item {
 	public String getDescription() {
 		return mDescription;
 	}
-	
+
 	public void setContent(String content) {
 		this.mContent = content;
 	}
@@ -112,7 +114,7 @@ public class Item {
 	public String getContent() {
 		return mContent;
 	}
-	
+
 	public void setImage(URL image) {
 		this.mImage = image;
 	}
@@ -120,7 +122,7 @@ public class Item {
 	public URL getImage() {
 		return this.mImage;
 	}
-	
+
 	public void setPubdate(Date pubdate) {
 		this.mPubdate = pubdate;
 	}
@@ -128,68 +130,67 @@ public class Item {
 	public Date getPubdate() {
 		return this.mPubdate;
 	}
-	
+
 	public void favorite() {
 		this.mFavorite = true;
 	}
-	
+
 	public void unfavorite() {
 		this.mFavorite = false;
 	}
-	
+
 	public void setFavorite(int state) {
 		if (state == DatabaseHelper.OFF)
 			this.mFavorite = false;
 		else
 			this.mFavorite = true;
 	}
-	
+
 	public boolean isFavorite() {
 		return this.mFavorite;
 	}
-	
+
 	public void read() {
 		this.mRead = true;
 	}
-	
+
 	public void unread() {
 		this.mRead = false;
 	}
-	
+
 	public void addEnclosure(Enclosure e) {
 		this.mEnclosures.add(e);
 	}
-	
-	public void setEnclosures(ArrayList<Enclosure> es){
+
+	public void setEnclosures(ArrayList<Enclosure> es) {
 		this.mEnclosures = es;
 	}
-	
+
 	public List<Enclosure> getEnclosures() {
 		return this.mEnclosures;
 	}
-	
+
 	public void setRead(int state) {
 		if (state == DatabaseHelper.OFF)
 			this.mRead = false;
 		else
 			this.mRead = true;
 	}
-	
+
 	public boolean isRead() {
 		return this.mRead;
 	}
-		
+
 	public ContentValues toContentValues() {
 		ContentValues values = new ContentValues();
-		values.put(ItemTable._ID, mId);
+		// values.put(ItemTable._ID, mId);
 		values.put(ItemTable.COLUMN_LINK, mLink.toString());
 		values.put(ItemTable.COLUMN_GUID, mGuid);
 		values.put(ItemTable.COLUMN_TITLE, mTitle);
 		if (mDescription == null)
 			values.putNull(ItemTable.COLUMN_DESCRIPTION);
 		else
-			values.put(ItemTable.COLUMN_DESCRIPTION,
-					mDescription);
+			values.put(ItemTable.COLUMN_DESCRIPTION, mDescription);
 		if (mContent == null)
 			values.putNull(ItemTable.COLUMN_CONTENT);
 		else
@@ -197,10 +198,8 @@ public class Item {
 		if (mImage == null)
 			values.putNull(ItemTable.COLUMN_IMAGE);
 		else
-			values.put(ItemTable.COLUMN_IMAGE, mImage
-					.toString());
-		values.put(ItemTable.COLUMN_PUBDATE, mPubdate
-				.getTime());
+			values.put(ItemTable.COLUMN_IMAGE, mImage.toString());
+		values.put(ItemTable.COLUMN_PUBDATE, mPubdate.getTime());
 		int state = DatabaseHelper.ON;
 		if (!mFavorite)
 			state = DatabaseHelper.OFF;
@@ -213,11 +212,25 @@ public class Item {
 		return values;
 	}
 
-
 	public String toString() {
-		String s =  "{ID=" + this.mId + " link=" + this.mLink.toString() + " GUID=" + this.mGuid + " title=" + this.mTitle + " description=" + this.mDescription + " content=" + this.mContent + " image=" + this.mImage.toString() + " pubdate=" + this.mPubdate.toString() + " favorite=" + this.mFavorite + " read=" + this.mRead + "}";
-		s = s + "}";
+		String s = "{ID=" + this.mId + " link=";
+		if (this.mLink == null)
+			s += "null";
+		else
+			s += this.mLink.toString();
+		s += " GUID=" + this.mGuid + " title=" + this.mTitle + " description="
+				+ this.mDescription + " content=" + this.mContent + " image=";
+		if (this.mImage == null)
+			s += "null";
+		else
+			s += this.mImage.toString();
+		if (this.mPubdate == null)
+			s += " pubdate=null";
+		else
+			s += " pubdate=" + this.mPubdate.toString();
+		s += " favorite=" + this.mFavorite + " read=" + this.mRead + "}";
+
 		return s;
 	}
-	
+
 }
