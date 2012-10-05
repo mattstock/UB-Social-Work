@@ -153,7 +153,6 @@ public class FeedTable implements BaseColumns {
 
 	public boolean updateFeed(long feedId, ContentValues values,
 			List<Item> items) {
-		Log.d(TAG, "updateFeed(f,v,i): " + feedId + " # items: " + items.size());
 		ItemTable itemtable = new ItemTable(mResolver);
 		int changed = mResolver.update(
 				Uri.parse(MyContentProvider.FEED_CONTENT_URI + "/" + feedId),
@@ -206,5 +205,4 @@ public class FeedTable implements BaseColumns {
 			cursor.close();
 		return feeds;
 	}
-
 }

@@ -1,11 +1,13 @@
 package org.csgeeks.socialwork;
 
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -58,7 +60,6 @@ public class ItemListFragment extends SherlockListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d(TAG, "onCreateView()" + mNum);
 		View v = inflater.inflate(R.layout.fragment_pager_list, container,
 				false);
 		TextView tv = (TextView) v.findViewById(R.id.channel_name);
@@ -72,7 +73,6 @@ public class ItemListFragment extends SherlockListFragment implements
 				ItemTable.COLUMN_PUBDATE };
 		int[] to = new int[] { android.R.id.text1, android.R.id.text2 };
 
-		Log.d(TAG, "onActivityCreated()");
 		super.onActivityCreated(saveInstanceState);
 
 		mCursorAdapter = new SimpleCursorAdapter(getActivity(),
@@ -98,12 +98,32 @@ public class ItemListFragment extends SherlockListFragment implements
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		Intent intent = null;
+
 		Log.d(TAG, "Item click: " + id);
-		// Mark as read
 		ItemTable db = new ItemTable(getActivity());
+		Item item = db.getItem(id);
+
+		// Mark as read
 		ContentValues values = new ContentValues();
 		values.put(ItemTable.COLUMN_READ, DatabaseHelper.ON);
 		db.updateItem(id, values);
+		// If there is content, display in a new view.
+		// If not, ask someone else to handle the display of the item.
+		String content = item.getContent();
+		if (content == null || content.length() < 10) {
+			try {
+				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink().toURI().toString()));
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			intent = new Intent(getActivity(), ItemViewerActivity.class);
+			intent.putExtra(ItemTable._ID, id);
+		}
+		
+		startActivity(intent);
 	}
 
 	@Override

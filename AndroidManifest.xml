@@ -26,19 +26,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".ItemViewerActivity" >
+        </activity>
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIWgxW8j7JiJw057kQFapV4UZlsFSQrc_8p_IM-w" />
-        <meta-data
-            android:name="splash_screen_duration"
-            android:value="2000" />
-        <meta-data
-            android:name="dynamic_mode"
-            android:value="true" />
-        <meta-data
-            android:name="show_update_startup_dialog"
-            android:value="true" />
         <meta-data
             android:name="GOOGLE_ANALYTICS_PROFILE_ID"
             android:value="UA-34888244-4" />

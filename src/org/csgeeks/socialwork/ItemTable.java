@@ -69,7 +69,6 @@ public class ItemTable implements BaseColumns {
 	}
 
 	public long addItem(long feedId, Item item) {
-		Log.d(TAG, "addItem(" + feedId + ",i): " + item.toString());
 		ContentValues values = item.toContentValues();
 		values.put(ItemTable.COLUMN_FEED_ID, feedId);
 		return addItem(values, item.getEnclosures());
@@ -139,8 +138,8 @@ public class ItemTable implements BaseColumns {
 
 	public Item getFirstItem(long feedId) {
 		Item item = null;
-		Cursor cursor = mResolver.query(MyContentProvider.ITEM_CONTENT_URI, null, null, null,
-				COLUMN_PUBDATE + DatabaseHelper.SORT_ASC);
+		Cursor cursor = mResolver.query(MyContentProvider.ITEM_CONTENT_URI,
+				null, null, null, COLUMN_PUBDATE + DatabaseHelper.SORT_ASC);
 
 		if (cursor != null && cursor.moveToFirst()) {
 			item = cursorToItem(cursor);
@@ -153,14 +152,28 @@ public class ItemTable implements BaseColumns {
 	}
 
 	public boolean hasItem(long feedId, Item item) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean found;
+		String[] args = new String[] { Long.toString(feedId),
+				item.getLink().toString(), item.getGuid(), item.getTitle() };
+		String[] projection = new String[] { ItemTable._ID };
+		Cursor cursor = mResolver.query(MyContentProvider.ITEM_CONTENT_URI,
+				projection, ItemTable.COLUMN_FEED_ID + "=? AND ("
+						+ ItemTable.COLUMN_LINK + "=? OR "
+						+ ItemTable.COLUMN_GUID + "=? OR "
+						+ ItemTable.COLUMN_TITLE + "=?)", args, null);
+
+		found = (cursor != null && cursor.moveToFirst());
+
+		if (cursor != null)
+			cursor.close();
+
+		return found;
 	}
 
 	public Item getLastItem(long feedId) {
 		Item item = null;
-		Cursor cursor = mResolver.query(MyContentProvider.ITEM_CONTENT_URI, null, null, null,
-				COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
+		Cursor cursor = mResolver.query(MyContentProvider.ITEM_CONTENT_URI,
+				null, null, null, COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
 
 		if (cursor != null && cursor.moveToFirst()) {
 			item = cursorToItem(cursor);
@@ -173,11 +186,13 @@ public class ItemTable implements BaseColumns {
 	}
 
 	public void cleanDbItems(long feedId) {
+		Log.d(TAG, "cleanDbItems(): NOP");
 		// TODO Auto-generated method stub
 
 	}
 
 	public void updateItem(long itemId, ContentValues values) {
+		Log.d(TAG, "updateItem(" + itemId + "): NOP");
 		// TODO Auto-generated method stub
 
 	}

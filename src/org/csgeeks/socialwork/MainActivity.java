@@ -50,22 +50,18 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-    	menu.addSubMenu("feeds");
-    	
+    	MenuInflater inflater = getSupportMenuInflater();
+    	inflater.inflate(R.menu.feed_options, menu);
+    
+    	MenuItem feedsMenu = menu.findItem(R.id.feeds);
     	feedsMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    	if (feedsMenu.hasSubMenu())
-    		subMenu = feedsMenu.getSubMenu();
-    	else
-    		subMenu = menu.addSubMenu(0,0,0,null);
-    	SubMenu subMenu = feedsMenu.addSubMenu();
+    	SubMenu subMenu = feedsMenu.getSubMenu();
+
     	FeedTable ft = new FeedTable(this);
     	
-    	feedsMenu.
-    	
     	int order = 0;
-    	for (Feed feed: ft.getFeeds()) {
-    		subMenu.add(0, Menu.NONE, order++, feed.getTitle());
-    	}
+    	for (Feed feed: ft.getFeeds())
+    		subMenu.add(Menu.NONE, Menu.NONE, order++, feed.getTitle());
     	
     	subMenu.setGroupCheckable(0, true, false);
     	
@@ -73,9 +69,8 @@ public class MainActivity extends SherlockFragmentActivity {
     }
     
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO figure out menu id for submenu items, then call
-		// look at tinyg code for how to talk to activity
-		mPager.setCurrentItem(0);
+		FeedTable ft = new FeedTable(this);
+// TODO		mPager.setCurrentItem(0);
 		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle());
 		return false;
 	}
