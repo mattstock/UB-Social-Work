@@ -8,31 +8,23 @@
         android:id="@+id/item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
         <TextView
         android:id="@+id/item_pubdate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-        <TextView
-        android:id="@+id/item_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/item_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Medium Text"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/web_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="onClick"
+        android:text="@string/web_view" />
 
 </LinearLayout>

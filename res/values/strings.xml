@@ -6,22 +6,7 @@
     <string name="email">sw-info@buffalo.edu</string>
     <string name="website">http://www.socialwork.buffalo.edu/</string>
 	<string name="contact">Matt Stock</string>
-	<string name="new_version">More feeds!</string>
-    <string name="loading">Loading&#8230;</string>
-	<string name="pref_aggregate_channel_title">Aggregate channel</string>
-    <string name="pref_aggregate_channel_descr">Aggregate enabled feeds into single channel</string>
-    <string name="pref_start_channel_title">Default channel</string>
-    <string name="pref_start_channel_descr">The channel to display by default when you start the application</string>
-    <string name="pref_item_view_title">Offline/Online reading</string>
-    <string name="pref_item_view_descr">Choose how you want to read the items</string>
-    <string name="pref_max_items_title">Items per channel</string>
-    <string name="pref_max_items_descr">The maximum number of items to display in a channel</string>
-    <string name="pref_max_hours_title">Discard items</string>
-    <string name="pref_max_hours_descr">Discard automatically items older than the specified period</string>
-    <string name="pref_update_period_title">Update items</string>
-    <string name="pref_update_period_descr">Update the items after the specified period</string>
-    <string name="pref_usage_data_title">Usage data</string>
-    <string name="pref_usage_data_descr">Send anonymous usage data</string>
     <string name="menu_settings">Settings</string>
     <string name="feed_menu_title">Feeds</string>
+    <string name="web_view">View</string>
 </resources>

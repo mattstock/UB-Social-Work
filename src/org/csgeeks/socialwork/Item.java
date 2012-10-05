@@ -1,15 +1,13 @@
 /*
- * Copyright (C) 2010-2011 Mathieu Favez - http://mfavez.com
- *
- *
- * This file is part of FeedGoal.
+ * Copyright 2012 Matthew Stock - http://www.bexkat.com/
+ * Adapted from FeedGoal copyright 2010-2011 Mathieu Favez - http://mfavez.com
  * 
- * FeedGoal is free software: you can redistribute it and/or modify
+ * This is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * FeedGoal is distributed in the hope that it will be useful,
+ * This is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -28,11 +26,6 @@ import java.util.List;
 
 import android.content.ContentValues;
 
-/**
- * A class for creating and managing instances of items.
- * 
- * @author Mathieu Favez Created 15/04/2010
- */
 public class Item {
 	private long mId = -1;
 	private URL mLink;
