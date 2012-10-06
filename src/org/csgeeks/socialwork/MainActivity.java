@@ -106,7 +106,6 @@ public class MainActivity extends SherlockFragmentActivity {
 			Bundle args = new Bundle();
 			ItemListFragment f = new ItemListFragment();
 
-			args.putInt("num", position);
 			args.putLong("feedId", mFeeds.get(position).getId());
 			args.putString("title", mFeeds.get(position).getTitle());
 			f.setArguments(args);
@@ -119,7 +118,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 	}
 
-	private void checkFreshness() {
+	public void checkFreshness() {
 		Date now = new Date();
 		ArrayList<Feed> oldFeeds = new ArrayList<Feed>();
 		FeedTable ft = new FeedTable(mCtx);
@@ -135,7 +134,7 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	// Check all of the active feeds to see if any of them have new elements. If
 	// so, add them to the DB.
-	private class UpdateFeeds extends AsyncTask<ArrayList<Feed>, Void, Boolean> {
+	public class UpdateFeeds extends AsyncTask<ArrayList<Feed>, Void, Boolean> {
 
 		@Override
 		protected Boolean doInBackground(ArrayList<Feed>... params) {

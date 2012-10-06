@@ -54,7 +54,6 @@ public class ItemListFragment extends SherlockListFragment implements
 	private SimpleDateFormat mFormat = new SimpleDateFormat(
 			"EEEE, MMMM d, yyyy");
 	private long mFeedId;
-	private int mNum;
 	private String mTitle;
 
 	@Override
@@ -64,15 +63,12 @@ public class ItemListFragment extends SherlockListFragment implements
 
 		Bundle b = getArguments();
 		if (b != null) {
-			mNum = getArguments().getInt("num");
 			mFeedId = getArguments().getLong("feedId");
 			mTitle = getArguments().getString("title");
 		} else {
-			mNum = 1;
 			mFeedId = 1;
 			mTitle = "None";
 		}
-		Log.d(TAG, "onCreate()" + mNum);
 	}
 
 	@Override
