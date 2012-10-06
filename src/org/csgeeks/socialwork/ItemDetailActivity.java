@@ -22,19 +22,24 @@ import java.net.URISyntaxException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 
-public class ItemViewerActivity extends SherlockFragmentActivity {
+public class ItemDetailActivity extends SherlockFragmentActivity {
 	ItemTable mItemTable;
 	long mItemId;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_itemviewer);
+
+		Fragment f = new ItemDetailFragment();
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		ft.add(android.R.id.content, f).commit();
 		
 		// Pull up the item to display
 		Intent intent = getIntent();
@@ -46,15 +51,14 @@ public class ItemViewerActivity extends SherlockFragmentActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+		Bundle b = new Bundle();
 		Item item = mItemTable.getItem(mItemId);
-		
-		TextView tv = (TextView) findViewById(R.id.item_content);
-		tv.setText(item.getContent());
-		tv = (TextView) findViewById(R.id.item_pubdate);
-		tv.setText(item.getPubdate().toString());
-		tv = (TextView) findViewById(R.id.item_title);
-		tv.setText(item.getTitle());
+
+		Fragment f = getSupportFragmentManager().findFragmentById(android.R.id.content);
+		b.putString("title", item.getTitle());
+		b.putString("pubDate", item.getPubdate().toString());
+		b.putString("content", item.getContent());
+		((ItemDetailFragment) f).updateState(b);
 	}	
 	
 	public void onClick(View v) {

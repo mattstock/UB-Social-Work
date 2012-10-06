@@ -132,7 +132,7 @@ public class ItemListFragment extends SherlockListFragment implements
 				e.printStackTrace();
 			}
 		} else {
-			intent = new Intent(getActivity(), ItemViewerActivity.class);
+			intent = new Intent(getActivity(), ItemDetailActivity.class);
 			intent.putExtra(ItemTable._ID, id);
 		}
 		
