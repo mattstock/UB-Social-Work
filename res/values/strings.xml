@@ -9,4 +9,5 @@
     <string name="menu_settings">Settings</string>
     <string name="feed_menu_title">Feeds</string>
     <string name="web_view">View</string>
+    <string name="loading">Loading Content</string>
 </resources>
