@@ -24,6 +24,10 @@ import java.util.Date;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.csgeeks.socialwork.db.Feed;
+import org.csgeeks.socialwork.db.FeedTable;
+import org.csgeeks.socialwork.db.Item;
+import org.csgeeks.socialwork.db.ItemTable;
 import org.xml.sax.SAXException;
 
 import android.support.v4.app.Fragment;

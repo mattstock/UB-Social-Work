@@ -7,6 +7,10 @@ import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.csgeeks.socialwork.MainActivity.UpdateFeeds;
+import org.csgeeks.socialwork.db.Feed;
+import org.csgeeks.socialwork.db.FeedTable;
+import org.csgeeks.socialwork.db.Item;
+import org.csgeeks.socialwork.db.ItemTable;
 import org.xml.sax.SAXException;
 
 import android.content.Context;
@@ -16,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -156,6 +161,11 @@ public class MainTabActivity extends SherlockFragmentActivity {
 					newitems = true;
 			}
 			return newitems;
+		}
+		
+		protected void onPostExecute(Boolean newItems) {
+			if (newItems)
+				Toast.makeText(MainTabActivity.this, "New items found", Toast.LENGTH_SHORT).show();
 		}
 	}
 

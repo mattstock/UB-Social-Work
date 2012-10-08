@@ -22,6 +22,10 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.csgeeks.socialwork.db.DatabaseHelper;
+import org.csgeeks.socialwork.db.Item;
+import org.csgeeks.socialwork.db.ItemTable;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;

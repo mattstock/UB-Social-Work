@@ -16,9 +16,10 @@
  * along with FeedGoal.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.csgeeks.socialwork;
+package org.csgeeks.socialwork.db;
 
 import java.net.URL;
+
 
 import android.content.ContentValues;
 

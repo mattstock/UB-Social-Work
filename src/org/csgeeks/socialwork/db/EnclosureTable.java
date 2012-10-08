@@ -16,11 +16,13 @@
  * along with FeedGoal.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.csgeeks.socialwork;
+package org.csgeeks.socialwork.db;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+
+import org.csgeeks.socialwork.MyContentProvider;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;

@@ -1,7 +1,6 @@
 package org.csgeeks.socialwork;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +24,7 @@ public class ItemDetailFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.activity_itemdetail, container,
+		View v = inflater.inflate(R.layout.item_detail, container,
 				false);
 		return v;
 	}

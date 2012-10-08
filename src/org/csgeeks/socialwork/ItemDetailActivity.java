@@ -19,6 +19,9 @@ package org.csgeeks.socialwork;
 
 import java.net.URISyntaxException;
 
+import org.csgeeks.socialwork.db.Item;
+import org.csgeeks.socialwork.db.ItemTable;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

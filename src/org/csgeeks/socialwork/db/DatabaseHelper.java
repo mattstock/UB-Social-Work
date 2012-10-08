@@ -15,7 +15,7 @@
  * along with FeedGoal.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.csgeeks.socialwork;
+package org.csgeeks.socialwork.db;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -23,6 +23,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csgeeks.socialwork.R;
+import org.csgeeks.socialwork.R.xml;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
@@ -43,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public static final int ON = 1;
 	private Context mCtx;
 
-	DatabaseHelper(Context context) {
+	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		mCtx = context;
 	}

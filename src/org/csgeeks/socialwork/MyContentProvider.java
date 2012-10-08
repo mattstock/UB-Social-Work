@@ -20,6 +20,11 @@ package org.csgeeks.socialwork;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.csgeeks.socialwork.db.DatabaseHelper;
+import org.csgeeks.socialwork.db.EnclosureTable;
+import org.csgeeks.socialwork.db.FeedTable;
+import org.csgeeks.socialwork.db.ItemTable;
+
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
