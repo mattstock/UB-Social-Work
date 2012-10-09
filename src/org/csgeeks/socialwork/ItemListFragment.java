@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -42,6 +43,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -63,7 +65,7 @@ public class ItemListFragment extends SherlockListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+		setHasOptionsMenu(true);
 
 		Bundle b = getArguments();
 		if (b != null) {
@@ -88,21 +90,32 @@ public class ItemListFragment extends SherlockListFragment implements
 	@Override
 	public void onActivityCreated(Bundle saveInstanceState) {
 		String[] from = new String[] { ItemTable.COLUMN_TITLE,
-				ItemTable.COLUMN_PUBDATE };
-		int[] to = new int[] { android.R.id.text1, android.R.id.text2 };
+				ItemTable.COLUMN_PUBDATE, ItemTable.COLUMN_READ };
+		int[] to = new int[] { R.id.row_title, R.id.row_pubdate, R.id.row_read };
 
 		super.onActivityCreated(saveInstanceState);
 
 		mCursorAdapter = new SimpleCursorAdapter(getActivity(),
-				android.R.layout.simple_list_item_2, null, from, to, 0);
+				R.layout.item_list, null, from, to,
+				SimpleCursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		mCursorAdapter.setViewBinder(new ViewBinder() {
 
 			@Override
 			public boolean setViewValue(View v, Cursor c, int index) {
-				if (index == 2) {
+				if (index == c.getColumnIndex(ItemTable.COLUMN_READ)) {
+					ImageView iv;
+					iv = (ImageView) v;
+					if (c.getInt(index) == DatabaseHelper.ON)
+						iv.setVisibility(View.INVISIBLE);
+					else
+						iv.setVisibility(View.VISIBLE);
+					return true;
+				}
+				if (index == c.getColumnIndex(ItemTable.COLUMN_PUBDATE)) {
 					String date = mFormat.format(new Date(Long.parseLong(c
 							.getString(index))));
-					TextView tv = (TextView) v;
+					TextView tv;
+					tv = (TextView) v;
 					tv.setText(date);
 					return true;
 				}
@@ -131,7 +144,8 @@ public class ItemListFragment extends SherlockListFragment implements
 		String content = item.getContent();
 		if (content == null || content.length() < 10) {
 			try {
-				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getLink().toURI().toString()));
+				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(item
+						.getLink().toURI().toString()));
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
@@ -139,18 +153,20 @@ public class ItemListFragment extends SherlockListFragment implements
 			intent = new Intent(getActivity(), ItemDetailActivity.class);
 			intent.putExtra(ItemTable._ID, id);
 		}
-		
+
 		startActivity(intent);
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		String[] projection = new String[] { ItemTable._ID,
-				ItemTable.COLUMN_TITLE, ItemTable.COLUMN_PUBDATE };
+				ItemTable.COLUMN_TITLE, ItemTable.COLUMN_PUBDATE,
+				ItemTable.COLUMN_READ };
 		CursorLoader cursorLoader = new CursorLoader(getActivity(),
 				Uri.parse(MyContentProvider.FEEDLIST_CONTENT_URI + "/"
 						+ mFeedId), projection, null, null,
-				ItemTable.COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
+				ItemTable.COLUMN_READ + DatabaseHelper.SORT_ASC + ","
+						+ ItemTable.COLUMN_PUBDATE + DatabaseHelper.SORT_DESC);
 		return cursorLoader;
 	}
 
@@ -162,42 +178,5 @@ public class ItemListFragment extends SherlockListFragment implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> arg0) {
 		mCursorAdapter.swapCursor(null);
-	}
-
-	private class MyCursorAdapter extends SimpleCursorAdapter {
-		Context mContext;
-		Cursor mCursor;
-		int[] mTo;
-		String[] mFrom;
-
-		public MyCursorAdapter(Context context, int layout, Cursor c,
-				String[] from, int[] to, int flags) {
-			super(context, layout, c, from, to, flags);
-			mContext = context;
-			mCursor = c;
-			mFrom = from;
-			mTo = to;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View row;
-			if (convertView == null)
-				row = View.inflate(mContext,
-						android.R.layout.simple_list_item_2, null);
-			else
-				row = convertView;
-
-			if (mCursor != null) {
-				mCursor.moveToPosition(position);
-
-				for (int i = 0; i < mFrom.length; i++) {
-					TextView tv = (TextView) row.findViewById(mTo[i]);
-					tv.setText(mCursor.getString(mCursor.getColumnIndex(mFrom[i])));
-				}
-			}
-			return row;
-		}
-
 	}
 }

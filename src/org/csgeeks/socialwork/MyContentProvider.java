@@ -307,7 +307,10 @@ public class MyContentProvider extends ContentProvider {
 				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values,
 						ItemTable._ID + "=" + id + " and " + selection,
 						selectionArgs);
-
+			// TODO Refine this if we need to - we can have different queries register based on feed ID,
+			// and just have a specific feed ID be updated here.
+			getContext().getContentResolver().notifyChange(FEEDLIST_CONTENT_URI,
+					null);
 			break;
 		case ENCLOSURES:
 			rowsUpdated = sqlDB.update(EnclosureTable.TABLE_NAME, values,
