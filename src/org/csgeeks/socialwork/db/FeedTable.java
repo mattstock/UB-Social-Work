@@ -225,4 +225,11 @@ public class FeedTable implements BaseColumns {
 			cursor.close();
 		return feeds;
 	}
+	
+	public void markAllAsRead(long feedId) {
+		ContentValues values = new ContentValues();
+		values.put(ItemTable.COLUMN_READ, DatabaseHelper.ON);
+		mResolver.update(Uri.parse(MyContentProvider.FEEDLIST_CONTENT_URI + "/" + feedId),
+				values, null, null);
+	}
 }

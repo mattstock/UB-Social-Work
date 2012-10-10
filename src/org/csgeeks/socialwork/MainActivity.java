@@ -38,16 +38,16 @@ import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.content.Context;
 
 public class MainActivity extends SherlockFragmentActivity {
-	static final String TAG = "MainActivity";
+	private static final String TAG = "MainActivity";
+	private static final int MENU_REFRESH = 0;
+	private static final int MENU_READ = 1;
 	private FeedPagerAdapter mAdapter;
 	private ViewPager mPager;
 	private Context mCtx;
@@ -72,28 +72,30 @@ public class MainActivity extends SherlockFragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.feed_options, menu);
-
-		MenuItem feedsMenu = menu.findItem(R.id.feeds);
-		feedsMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		SubMenu subMenu = feedsMenu.getSubMenu();
-
-		FeedTable ft = new FeedTable(this);
-
-		int order = 0;
-		for (Feed feed : ft.getFeeds())
-			subMenu.add(Menu.NONE, Menu.NONE, order++, feed.getTitle());
-
-		subMenu.setGroupCheckable(0, true, false);
-
+		menu.add(Menu.NONE, MENU_REFRESH, 1, "Refresh").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add(Menu.NONE, MENU_READ, 2, "Mark all as Read");
+		
 		return super.onCreateOptionsMenu(menu);
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean onOptionsItemSelected(MenuItem item) {
+		long feedId = mAdapter.getItem(mPager.getCurrentItem()).getArguments().getLong("feedId");
 		FeedTable ft = new FeedTable(this);
-		// TODO mPager.setCurrentItem(0);
-		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle());
+		Feed f = ft.getFeed(feedId);
+
+		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle() + ", " + feedId);
+
+		switch (item.getItemId()) {
+		case MENU_REFRESH:
+			ArrayList<Feed> array = new ArrayList<Feed>();
+			array.add(f);
+			new UpdateFeeds().execute(array);
+			return true;
+		case MENU_READ:
+			ft.markAllAsRead(feedId);
+			return true;
+		}
 		return false;
 	}
 
@@ -122,6 +124,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void checkFreshness() {
 		Date now = new Date();
 		ArrayList<Feed> oldFeeds = new ArrayList<Feed>();

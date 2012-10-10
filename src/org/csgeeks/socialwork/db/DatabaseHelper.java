@@ -65,6 +65,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		FeedTable.onUpgrade(db, oldVersion, newVersion);
 		ItemTable.onUpgrade(db, oldVersion, newVersion);
 		EnclosureTable.onUpgrade(db, oldVersion, newVersion);
+		
+		populateFeeds(db);
+		Log.d(TAG, "onUpgrade() complete");
 	}
 
 	private List<Feed> getOPMLResourceFeeds() throws XmlPullParserException,

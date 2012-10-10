@@ -294,6 +294,16 @@ public class MyContentProvider extends ContentProvider {
 						FeedTable._ID + "=" + id + " and " + selection,
 						selectionArgs);
 			break;
+		case FEEDLIST_ID:
+			id = uri.getLastPathSegment();
+			if (TextUtils.isEmpty(selection))
+				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values,
+						ItemTable.COLUMN_FEED_ID + "=" + id, null);
+			else
+				rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values,
+						ItemTable.COLUMN_FEED_ID + "=" + id + " and " + selection,
+						selectionArgs);
+			break;			
 		case ITEMS:
 			rowsUpdated = sqlDB.update(ItemTable.TABLE_NAME, values, selection,
 					selectionArgs);
