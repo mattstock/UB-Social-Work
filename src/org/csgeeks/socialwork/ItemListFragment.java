@@ -20,18 +20,18 @@ package org.csgeeks.socialwork;
 
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.csgeeks.socialwork.db.DatabaseHelper;
+import org.csgeeks.socialwork.db.Feed;
+import org.csgeeks.socialwork.db.FeedTable;
 import org.csgeeks.socialwork.db.Item;
 import org.csgeeks.socialwork.db.ItemTable;
 
-import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
@@ -51,11 +51,12 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 
 public class ItemListFragment extends SherlockListFragment implements
 		LoaderManager.LoaderCallbacks<Cursor> {
 	private static final String TAG = "ItemListFragment";
+	private static final int MENU_REFRESH = 0;
+	private static final int MENU_READ = 1;
 	private SimpleCursorAdapter mCursorAdapter;
 	private SimpleDateFormat mFormat = new SimpleDateFormat(
 			"EEEE, MMMM d, yyyy");
@@ -155,6 +156,32 @@ public class ItemListFragment extends SherlockListFragment implements
 		}
 
 		startActivity(intent);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.add(Menu.NONE, MENU_REFRESH, 1, "Refresh").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add(Menu.NONE, MENU_READ, 2, "Mark all as Read");
+	}
+
+	@SuppressWarnings("unchecked")
+	public boolean onOptionsItemSelected(MenuItem item) {
+		FeedTable ft = new FeedTable(getActivity());
+		Feed f = ft.getFeed(mFeedId);
+
+		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle() + ", " + mFeedId);
+
+		switch (item.getItemId()) {
+		case MENU_REFRESH:
+			ArrayList<Feed> array = new ArrayList<Feed>();
+			array.add(f);
+			new UpdateFeeds(getActivity()).execute(array);
+			return true;
+		case MENU_READ:
+			ft.markAllAsRead(mFeedId);
+			return true;
+		}
+		return false;
 	}
 
 	@Override
