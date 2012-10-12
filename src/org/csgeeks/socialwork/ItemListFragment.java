@@ -57,6 +57,7 @@ public class ItemListFragment extends SherlockListFragment implements
 	private static final String TAG = "ItemListFragment";
 	private static final int MENU_REFRESH = 0;
 	private static final int MENU_READ = 1;
+	private static final int MENU_ABOUT = 2;
 	private SimpleCursorAdapter mCursorAdapter;
 	private SimpleDateFormat mFormat = new SimpleDateFormat(
 			"EEEE, MMMM d, yyyy");

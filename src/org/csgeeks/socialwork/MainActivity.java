@@ -31,14 +31,13 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 
 import android.os.Bundle;
 import android.content.Context;
 
 public class MainActivity extends SherlockFragmentActivity {
 	private static final String TAG = "MainActivity";
+	private static final int MENU_ABOUT = 2;
 	private FeedPagerAdapter mAdapter;
 	private ViewPager mPager;
 	private Context mCtx;
@@ -61,24 +60,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		checkFreshness();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(Menu.NONE, 3, 1, "Foo").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	public boolean onOptionsItemSelected(MenuItem item) {
-		long feedId = mAdapter.getItem(mPager.getCurrentItem()).getArguments().getLong("feedId");
-		FeedTable ft = new FeedTable(this);
-		Feed f = ft.getFeed(feedId);
-
-		Log.d(TAG, "onOptionsItemSelected: " + item.getTitle() + ", " + feedId);
-
-		switch (item.getItemId()) {
-		}
-		return false;
-	}
 
 	public class FeedPagerAdapter extends FragmentPagerAdapter {
 		ArrayList<Feed> mFeeds;

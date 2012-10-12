@@ -10,4 +10,5 @@
     <string name="feed_menu_title">Feeds</string>
     <string name="web_view">View</string>
     <string name="loading">Loading Content</string>
+    <string name="about">Developed on behalf of the University at Buffalo School of Social Work (<a>http://www.socialwork.buffalo.edu/</a>).\nDeveloped by Bexkat Systems LLC (<a>http://www.bexkat.com/</a>).</string>
 </resources>

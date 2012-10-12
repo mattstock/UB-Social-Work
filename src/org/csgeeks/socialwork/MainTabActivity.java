@@ -16,9 +16,12 @@ import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class MainTabActivity extends SherlockFragmentActivity {
 	private static final String TAG = "MainTabActivity";
+	private static final int MENU_ABOUT = 2;
 	private Context mCtx;
 	
 	@Override
@@ -46,6 +49,24 @@ public class MainTabActivity extends SherlockFragmentActivity {
 	protected void onResume() {
 		super.onResume();
 		checkFreshness();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(Menu.NONE, MENU_ABOUT, Menu.CATEGORY_SECONDARY, "About");
+		
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MENU_ABOUT:
+	        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+	        AboutFragment af = new AboutFragment();
+	        af.show(ft, "about");
+			return true;
+		}
+		return false;
 	}
 
 	private class MyTabListener implements ActionBar.TabListener {
