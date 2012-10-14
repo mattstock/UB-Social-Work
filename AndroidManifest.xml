@@ -21,10 +21,10 @@
             android:name=".MainActivity"
             android:label="@string/app_name" >
          </activity>
-        <activity android:name=".ItemDetailActivity" >
+        <activity android:name="com.bexkat.feedlib.ItemDetailActivity" >
         </activity>
         <activity
-            android:name=".MainTabActivity"
+            android:name="com.bexkat.feedlib.MainTabActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -44,12 +44,12 @@
             android:name="com.google.android.apps.analytics.AnalyticsReceiver"
             android:exported="true" >
             <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
+                <action android:name="org.csgeeks.socialwork.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
 
         <provider
-            android:name=".MyContentProvider"
+            android:name="com.bexkat.feedlib.MyContentProvider"
             android:authorities="org.csgeeks.socialwork.contentprovider" >
         </provider>
     </application>
